@@ -1,0 +1,563 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{cancel}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+\usepackage{etoolbox}
+\usepackage{float}
+%\usepackage{subcaption}
+\usepackage{caption}
+\everymath{\displaystyle}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{bibentry}
+%\usepackage[notocbib]{apacite} 
+\usepackage{ragged2e}
+\usepackage{chngcntr} %contador de figuras por sección
+\usepackage{bibentry}
+\usepackage{epstopdf}
+
+\counterwithin{figure}{section}
+
+\setbeamertemplate{caption}[numbered] %numbering figures
+\renewcommand{\arcsin}{\operatorname{arcsen}}
+% Algunos shortcuts
+
+% Funciones trigonométricas corregidas al español
+\renewcommand{\sin}{\operatorname{sen}}
+\renewcommand{\d}[1]{\,\text{d} #1} % Diferencial bien escrito
+\newcommand{\ds}[1]{\displaystyle{#1}}
+
+%derivadas parciales
+% Formato americano para subenumeraciones
+\renewcommand{\labelenumii}{(\alph{enumii})}
+
+% Cargamos include de PIM
+\input{C:/Users/pablo/Ingenieria/include.tex}
+%\graphicspath{{C:/Users/pablo/Ingenieria/Control Inteligente/Tarea 1/Imagenes/}}
+\graphicspath{{./figs/}{C:/Users/pablo/Ingenieria/Latex/}{C:/Users/pablo/Documents/MATLAB/Magister/Pablo/OpenLoop_0901/figures/}}
+\usetheme{Warsaw} %define los colores de la presentacion y la volaa
+
+\makeatother
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.6\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle\hspace*{3em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{1ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatletter
+\setbeamertemplate{navigation symbols}{}
+
+\begin{document}
+% acá van, en el preambulo, los titulos pa que quede fino y todo
+\title{Capítulo 6: Control Predictivo basado en Aprendizaje de Máquinas del Proceso de Espesamiento}
+\subtitle{Control Predictivo Multivariable Basado en Aprendizaje de Máquinas para la Optimización de la Producción de Relaves en Pasta}
+\author{Pablo Diaz}
+\institute{Pontificia Universidad Católica}
+\date{}
+
+\AtBeginSection[]%esta wea es para que highlightee la seccion en la que estoy. El hideothersubsectuons no se pa que sirve.
+{
+  \begin{frame}<beamer>
+   %\begin{multicols}{2}
+     \tableofcontents[currentsection]
+   %\end{multicols}
+  \end{frame}
+}
+%Antibes
+%Bergen
+%Berkeley
+%Berlin
+%Copenhagen
+%Darmstadt
+%Dresden
+%Frankfurt
+%Goettingen
+%Hannover
+%Ilmenau
+%JuanLesPins
+%Luebeck
+%Madrid
+%Malmoe
+%Marburg
+%Montpellier
+%PaloAlto
+%Pittsburgh
+%Rochester
+%Singapore
+%Szeged
+%Warsaw
+%boxes
+%default
+%CambridgeUS
+
+\frame{\titlepage}
+\begin{frame}{Tabla de Contenidos}
+\tableofcontents[hideallsubsections]
+\end{frame}
+\begin{myFrame}{Introducción}
+
+En este capítulo se exponen los resultados del controlador predictivo basado en Random Forests y se contrastan con otras técnicas de control.
+
+El principal objetivo de esta presentación es mostrar los avances en esta materia, así como un análisis de posibles mejoras y trabajos futuros.
+
+\end{myFrame}
+\section{Problema de Control}
+\subsection{Formulación}
+\begin{myFrame}{Definición formal}
+La estrategia utilizada es de \textbf{horizonte recesivo}: en el instante $t$ se tiene información de la planta hasta ese instante, sin considerar el valor de la variable manipulada en el instante $t$: esto es justamente el valor que se desea calcular. 
+
+El controlador MPC \textbf{utiliza un modelo predictivo} para generar la matriz (caso MIMO) $\hat{y}(t+j)$ en el horizonte $N_y$. Este modelo depende de los valores $u(t),u(t+1),...,u(t+N_u)$ de las MV en el horizonte de control. En base a una función objetivo y restricciones, el controlador determina la \emph{secuencia óptima de valores} $\squig{u(t)}$ en el horizonte $N_u$ que llevan las CV a sus referencias con el menor esfuerzo de control. \textbf{Solamente el primer valor de esa secuencia} es aplicado al sistema, pues en el instante $t+1$ se poseerá nueva información sobre el sistema - mediante nuevas mediciones - por lo que todo el proceso se vuelve a realizar.
+\framebreak
+
+Para poder formular el problema de control desde el punto de vista de un criterio de optimización, son necesarios los siguientes conceptos:
+\begin{description}
+\item[Función objetivo:] 
+La forma general de esta será
+\begin{equation}\label{eq:funcObj}
+V(y,u)^{N_y}_{N_u} = \sum_{k = 0}^{N_y}l(e(t+k))+\sum_{k = 0}^{N_u}v(u(t+k))
+\end{equation}
+
+donde $e(t) = \vec{w(t)}-\vec{y(t)}$ es el error, $N_y$ es el horizonte de predicción y $N_u$ es el horizonte de control. 
+
+\framebreak
+\item[Modelo predictivo:] El modelo predictivo utilizado es el generado por Random Forests para cada una de las variables controladas. 
+
+\item[Restricciones:] Las restricciones  contemplan límites de proceso sobre las CV ($\underline{Y}_i \leq y_i(t) \leq \overline{Y}_i$) y las MV ($\underline{U}_i \leq u_i(t) \leq \overline{U}_i$) y restricciones sobre la tasa de cambio de las MV ($\underline{\delta}_i \leq \Delta u_i(t) \leq \overline{\delta}_i$). Sin embargo, la restricción más importante es obviamente \emph{el modelo predictivo}: la relación expresada en  que rige la dinámica del sistema.
+\end{description}
+
+\framebreak
+
+Existen \textbf{tres} tasas de datos conviviendo simultáneamente:
+\begin{itemize}
+\item $\tau_s$: Tiempo de muestreo del sistema y simulación. 1 segundo.
+\item $\tau_R$: Tiempo de \qt{reacción} del sistema. Se refiere al tiempo en que se pueden ver cambios apreciables en las variables. \textbf{El modelo de Random Forest predice a este paso temporal}. 10 minutos.
+\item $\tau_C$: Tasa a la que el controlador MPC emite un cambio en la acción de control. 50 minutos.
+\end{itemize}
+
+
+\end{myFrame}
+\begin{myFrame}{Formulación: Modelo predictivo}
+
+Como se comentó, el modelo predictivo utilizado corresponde a Random Forests. 
+
+Es importante destacar que el modelo es lineal en términos de los árboles (es una suma de ellos), pero cada árbol es \textbf{no lineal y no diferenciable}. Debido a ello, la metodología para combinar control óptimo y estos predictores debe hacer uso de métodos de optimización no basados en descenso del gradiente.
+
+Esta será en definitiva la única restricción dura del modelo (que son $N_y$ restricciones no lineales) en conjunto con la restricción sobre las variables manipuladas.
+
+\end{myFrame}
+\begin{myFrame}{Formulación: Función objetivo}
+
+El controlador diseñado cuenta con la siguiente función objetivo:
+\begin{equation}\label{eq:FO_MPC_RF}
+\begin{split}
+\text{min} V(y,u)^{N_y}_{N_u} = \sum_{j = 0}^{N_y-1}\ptsis{\hat{e}(t+j)}^TQ\ptsis{\hat{e}(t+j)}\\
++\sum_{j = 0}^{N_u}\Delta u(t+j)^TR\Delta u(t+j)\\
++\beta^T\vabs{\hat{y}(t+N_y)-y_{ss}}^2\\
++\sum_{j = 0}^{N_y}\epsilon_j^T\Lambda\epsilon_j
+\end{split}
+\end{equation}
+
+\framebreak
+
+donde:
+\begin{itemize}
+\item $\hat{e}(t+j)$ es el error predicho ($\hat{y}(t+j)-w(t+j)$).
+\item $y_{ss}$ es el setpoint escogido (representaría la operación en régimen).
+\item $w$ es la referencia a seguir durante el horizonte. $y_{ss}(t)$ = $w(t+N_y)$.
+\item $\beta^T\vabs{\hat{y}(t+N_y)-y_{ss}}^2$ es un término que penaliza el valor final del MPC con el fin de garantizar estabilidad de la ley de control.
+\item $\epsilon_j$ es \textbf{una variable on-off} que vale 1 si alguna de las restricciones sobre las variables controladas se viola. Esto permite \textbf{suavizar las restricciones lineales del problema} trasladándolas a la función objetivo.
+\item $Q$,$R$,$\beta$,$\Lambda$ son los pesos para los distintos componentes de la función objetivo.
+\end{itemize}
+\end{myFrame}
+
+\begin{myFrame}{Formulación: Restricción}
+
+Las restricciones sobre las variables controladas son las siguientes:
+\bseq{}\label{eq:restriccionesMPC_CV}
+\begin{gather}
+\underline{Y}_1 \leq y_{1}(t) \leq \overline{Y}_1 \;\;\forall t\\
+\underline{Y}_2 \leq y_{2}(t) \leq \overline{Y}_2 \;\;\forall t\\
+\underline{Y}_3 \leq y_{3}(t) \leq \overline{Y}_3 \;\;\forall t
+\end{gather}
+\eseq{}
+
+Estas restricciones son suavizadas para generar el término
+\framebreak
+
+Las restricciones sobre las variables manipuladas son:
+\bseq{}\label{eq:restriccionesMPC_MV}
+\begin{gather}
+\underline{U}_1 \leq u_{1}(t) \leq \overline{U}_1 \;\;\forall t\\
+\underline{U}_2 \leq u_{2}(t) \leq \overline{U}_2 \;\;\forall t\\
+\vabs{\Delta u_{1}(t)} \leq \delta_{u_1} \;\;\forall t\\
+\vabs{\Delta u_{2}(t)} \leq \delta_{u_2} \;\;\forall t\\
+\end{gather}
+\eseq{}
+
+Además se tienen las $N_y$ restricciones no lineales agregadas por el modelo predictivo, que son de la forma:
+
+\bseq{}\label{eq:restriccionesMPC_RF}
+\begin{gather}
+\hat{y}_i = f_{i_{RF}}(p_i)\\
+p_i = \corch{\squig{y_i(t-k\tau_R)}_{k = 1}^{n_a},\squig{u_j(t-k\tau_R)}_{k = 1}^{n_b},\squig{d(t-k\tau_R)}_{k = 1}^{n_c}}
+\end{gather}
+\eseq{}
+
+para cada una de las $i$ variables controladas.
+\end{myFrame}
+\begin{myFrame}{Programacion Evolutiva}
+
+La noción básica es generar una distribución inicial de puntos en el espacio factible que van evolucionando según alguna aleatoreidad. Si el algoritmo se sintoniza bien, se puede abarcar una buena porción del espacio factible y por lo tanto aumentar las probabilidades de encontrar un óptimo global.
+
+\framebreak
+
+Los dos principales algoritmos de programación evolutiva utilizados son algoritmos genéticos y un método denominado \textit{particle swarm optimization} (PSO), inspirado en el movimiento de hormigas, abejas y aves de temporada.
+
+\end{myFrame}
+
+\begin{myFrame}{Particle Swarm Optimization}
+A continuación se ofrece una breve descripción del algoritmo:
+
+\begin{enumerate}
+\item Se inicializan $k$ partículas en posiciones uniformemente distancias en el espacio factible, con una velocidad propia $v_k$. A cada una se le aplica la función objetivo.
+\item El valor de la mejor función objetivo (mínimo) se registra, así como el valor de la función objetivo para cada partícula. Si este valor es menor que el valor anterior, se actualiza.
+\item Para cada partícula $k$ con posición $p_k(i)$, se calcula su nueva velocidad como una mezcla ponderada entre su velocidad \qt{innata} $v_k$, su distancia al \textbf{mejor punto de toda la población} ($g(i)$) y el \textbf{mejor punto de un vecindario de ella} $n_k(i)$ . Es decir, $v_k(i+1) = \alpha v_k(i)+\beta (g(i)-p(k))+\gamma (n_k(i)-p_k(i))$.
+\item Se actualizan las posiciones de las partículas según su velocidad y se repite el algoritmo hasta una condición de término (tolerancias, tiempo, iteraciones, etc.).
+\end{enumerate}
+
+\framebreak
+
+La implementación de este algoritmo en las simulaciones contempla los siguientes parámetros:
+\begin{itemize}
+\item $k$: Número de partículas.
+\item $I$: Máximo de iteraciones.
+\item $\delta_s$: Tolerancia de estancamiento. Valor de cambio en la función objetivo mínimo antes de que se considere el algoritmo \qt{estancado}.
+\item $I_s$: Máximo de iteraciones de estancamiento. Esto se refiere a la cantidad máxima de iteraciones permisibles en que la función objetivo cambie menos que la tolerancia $\delta_s$.
+\item $\epsilon$: Tolerancia de la función objetivo. Puesto que la función objetivo es una forma cuadrática, esta será mínima cuando su sumandos sean cero.
+\item $\epsilon_x$: Tolerancia de distancia entre partículas. Dado que para el problema de control lo importante es la \textbf{secuencia} $\squig{u}(t)$ y no el valor de la función objetivo, se le impone al algoritmo que cuente cuantas veces el óptimo global se mantiene en una bola de radio $\epsilon_x$ de la solución anterior.
+\item $\Sigma_x$: Límite de veces en que la solución óptima se encuentra en una bola de rado $\epsilon_x$ de la solución de la iteración anterior.
+\item $\delta_{u_{j}}$: corresponde a los límites en la variación de las MV según las ecuaciones \ref{eq:restriccionesMPC_MV}. Debido a que el controlador MPC está formulado en base a la variación de las MV, se puede forzar al algoritmo a buscar soluciones limitadas por estas restricciones. Por ende, estas siempre se cumplen por construcción del método.
+\end{itemize}
+\end{myFrame}
+\begin{myFrame}{Controlador PI}
+Como punto de comparación inicial se utilizó una estrategia PI para controlar las variables $y_2$ y $y_3$ utilizando $u_1$ y $u_2$ respectivamente. Los lazos están acoplados de esa forma según los estudios realizados en la tesis de Juan Ignacio Langlois. Así mismo, la sintonía de estos controladores está hecha en base a este mismo estudio:
+
+$$K_{p_1} = 90, K_{i_1} = 3.6$$
+
+$$K_{p_2} = 3, K_{i_2} = 0.0001$$
+\end{myFrame}
+\subsection{Parámetros del Controlador}
+\begin{myFrame}{Parámetros fijados - Función Objetivo}
+A continuación se listan los parámetros utilizados para el controlador MPC:
+\begin{itemize}
+\item $Q$: En primera instancia, debido a que las variables se mueven en distintos órdenes de magnitud, esta se normalizan en el rango 0 a 10. Posteriormente, se aplica la siguiente matriz de costos (uniforme en el horizonte de predicción):
+$$Q = 
+\begin{bmatrix}
+1 &    0  &   0   \\
+     0  &   1   &  0 \\
+     0   &  0  & 100  
+\end{bmatrix}
+$$
+
+Se puede ver que esta matriz asigna importancia al control de $y_3$. Esta decisión se mantuvo con fines ilustrativos, pero es fácilmente modificable.
+
+\item $R$: La matriz de costos para las variables manipuladas es:
+$$R = 
+\begin{bmatrix}
+0.0010   &      0 \\
+         0 &   0.0100  
+\end{bmatrix}
+$$
+Se puede ver en esta matriz que se privilegia el uso de $u_1$ (flujo de descarga) por sobre la dosis de floculante. Esto es razonable, pues esta variable tiene un mayor efecto sobre el proceso que el floculante adicionado.
+
+\item $\beta^T$: El vector $\beta$ busca asegurar la estabilidad del controlador. Para estas experiencias, se mantuvo en el valor:
+$$\beta = 
+\begin{bmatrix}
+1 & 1 & 1
+\end{bmatrix}
+$$
+
+\item $\Lambda$: Esta matriz - que penaliza el hecho de que las variables controladas rompan sus límites mediante las variables binarias $\epsilon_j$ - se mantuvo en:
+
+$$\Lambda = 
+\begin{bmatrix}
+1 &    0  &   0   \\
+     0  &   1   &  0 \\
+     0   &  0  & 1  
+\end{bmatrix}
+$$
+\end{itemize}
+\end{myFrame}
+
+\begin{myFrame}{Parámetros fijados - Restricciones}
+
+La tabla \ref{tab:restriccionesNumeros} resume todas las restricciones aplicadas en el problema.
+
+\begin{table}[H]
+\caption{Límites y restricciones físicas sobre las variables del problema}
+\label{tab:restriccionesNumeros}
+\begin{tabular}{c|ccccccc}
+                         & \textbf{$y_1$}                                                       & \textbf{$y_2$}                                                        & \textbf{$y_3$}                                                    & \textbf{$u_1$}                                                   & \textbf{$u_2$}                                                    & \textbf{$\Delta u_1$}                                           & \textbf{$\Delta u_2$}                                          \\ \hline
+\textbf{$\underline{L}$} & \begin{tabular}[c]{@{}c@{}}$\underline{Y}_1$ \\ $16.81$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\underline{Y}_2$ \\  $71.49$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\underline{Y}_3$\\ $1.5$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\underline{U}_1$\\ $70$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\underline{U}_2$\\  $18$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\delta_{u_1}$ \\ $-15$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\delta_{u_2}$ \\ $-5$\end{tabular} \\ \hline
+\textbf{$\overline{L}$}  & \begin{tabular}[c]{@{}c@{}}$\overline{Y}_1$\\ $ 25.224$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\overline{Y}_2$\\ $75.913$\end{tabular}   & \begin{tabular}[c]{@{}c@{}}$\overline{Y}_3$\\  $8$\end{tabular}   & \begin{tabular}[c]{@{}c@{}}$\overline{U}_1$\\ $125$\end{tabular} & \begin{tabular}[c]{@{}c@{}}$\overline{U}_2$ \\ $31$\end{tabular}  & \begin{tabular}[c]{@{}c@{}}$\delta_{u_1}$ \\ $15$\end{tabular}  & \begin{tabular}[c]{@{}c@{}}$\delta_{u_2}$\\ $5$\end{tabular}  
+\end{tabular}
+\end{table}
+
+\framebreak
+
+Estas restricciones fueron escogidas en base a los documentos de operación del espesador de la Minera Florida, pero adecuados a los rangos de operación razonables para el espesador simulado.
+\end{myFrame}
+
+\begin{myFrame}{Parámetros fijados - PSO}:
+\begin{itemize}
+\item $k$: 100
+\item $I$: 30
+\item $\delta_s$: 0.0005.
+\item $I_s$: 30 (por tanto, inactivo).
+\item $\epsilon$: 0.001
+\item $\epsilon_x$: 0.001.
+\item $\Sigma_x$: 15.
+\end{itemize}
+\end{myFrame}
+\section{Resultados}
+\subsection{Seguimiento de referencia}
+\begin{myFrame}{Prueba de inercia}
+La primera prueba de control revisada corresponde a un freno a la inercia natural del espesador. Para hacer esta prueba, se controlaron las primeras 100 horas del mes de septiembre utilizando como estado inicial el final del mes de agosto.
+
+En estas pruebas se mantuvieron las perturbaciones constantes y fijas en su valor inicial según se muestra en la figura \ref{fig:control_DV_IT_1_nl_2906}. Tampoco hay cambios en la referencia.
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_DV_IT_1_nl_2906}
+\caption{Perturbaciones para pruebas de inercia y de cambios en las referencias}
+\label{fig:control_DV_IT_1_nl_2906}
+\end{figure}
+\framebreak
+La figura \ref{fig:SemTeleco_Comparison_mpc_rf_CV_1306} grafica la evolución de este control.
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{SemTeleco_Comparison_mpc_rf_CV_1306}
+\caption{Desempeño del controlador MPC Random Forest frente a la inercia de la planta}
+\label{fig:SemTeleco_Comparison_mpc_rf_CV_1306}
+\end{figure}
+
+\framebreak
+
+Se puede ver como claramente el controlador diseñado logra mantener las variables controladas en el rango especificado. En este caso, ninguna de las variables contoladas se sale de los límites de la tabla \ref{tab:restriccionesNumeros}.
+
+Con el fin de comparar el desempeño del controlador respecto al control PI. Durante el resto de este documento, las curvas continuas en rojo corresponderán al MPC Random Forest y las curvas en azul punteadas al control PI. Las curvas verdes son referencias cuando corresponda.
+
+\framebreak
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_CV_IT_1_nl_2906}
+\caption{Control de inercia de MPC RF (rojo continuo) contra PI (azul discontinuo) para las primeras 100 horas del mes de septiembre.}
+\label{fig:control_CV_IT_1_nl_2906}
+\end{figure}
+
+
+\framebreak
+
+La figura \ref{fig:control_CV_IT_1_nl_2906} muestra un buen desempeño del lazo PI para el control de la concentración de descarga (estrechamente relacionado con el torque, por lo que en consecuencia también se controla esta variable). Sin embargo, es posible ver que el nivel de interface se va fuera de rango y de hecho sobre pasa el límite del rebalse.
+
+El MPC - RF, en cambio, logra controlar todas las variables \textbf{aún} sin tener los lazos acoplados. Por otro lado, logra un overshoot menor en $y_1$ e $y_2$. En efecto, el control PI rompe los límites de estas variables para controlarlas.
+
+La figura \ref{fig:control_MV_IT_1_nl_2906} muestra la evolución de las variables manipuladas.
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_MV_IT_1_nl_2906}
+\caption{Comparación entr MV para MPC RF (rojo continuo) y PI (azul discontinuo) para las primeras 100 horas del mes de septiembre.}
+\label{fig:control_MV_IT_1_nl_2906}
+\end{figure}
+
+\framebreak
+
+Se puede ver en la figura \ref{fig:control_MV_IT_1_nl_2906} que el control del lazo PI satura rápidamente en sus valores menores. Esto se puede mejorar poniendo mecanismo anti-windup. Sin emabrgo, el controlador MPC produce muchos mejores resultados. Se puede ver claramente como además el MPC intenta mantener las MV lo más planas posibles, haciendo esfuerzos de control solamente donde resulta estrictamente necesario.
+
+\end{myFrame}
+\begin{myFrame}{Cambio en referencia}
+
+Estas pruebas contemplan cambios en escalón sobre las variables controladas con el fin de probar la capacidad del controlador para seguir cambios en las referencias.
+
+Es importante recordar que el MPC diseñado no tiene información \textbf{futura} de los setpoints entregados; simplemente extrapola el valor actual de las referencias.
+
+Para estas pruebas las perturbaciones se mantuvieron constantes
+
+\end{myFrame}
+\begin{myFrame}{Cambios en nivel de interfaz}
+Las figuras \ref{fig:control_CV_IT_2_nl_2906} y \ref{fig:control_MV_IT_2_nl_2906} comparan ambos controladores frente a un cambio en escalón - brusco - sobre el nivel de interfaz.
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_CV_IT_2_nl_2906}
+\caption{Comparación entre MPC RF (rojo continuo) y PI (azul discontinuo) para cambio de 5 metros en el nivel de interfaz.}
+\label{fig:control_CV_IT_2_nl_2906}
+\end{figure}
+
+\framebreak
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_MV_IT_2_nl_2906}
+\caption{Comparación en las MV entre MPC RF (rojo continuo) y PI (azul discontinuo) para cambio de 5 metros en el nivel de interfaz}
+\label{fig:control_MV_IT_2_nl_2906}
+\end{figure}
+
+\framebreak
+
+Se puede ver en la figura \ref{fig:control_CV_IT_2_nl_2906} que el control PI tiene un comportamiento similar a la prueba anterior. Sin embargo, en este caso, el MPC no tiene un comportamiento tan satisfactorio, principalmente porque el torque y la concentración de descarga se ven fuertemente afectados. De hecho, se rompen los límites de la tabla \ref{tab:restriccionesNumeros}.
+
+Sin embargo, esto se debe al diseño de los pesos en la función objetivo. La elección de estos valores implica que el control de la cama tiene un peso relativo similar al control de las otras dos CV. Resintonizar estos parámetros podría mejorar el rendimiento. Así mismo, el cambio en la referencia es importante, lo que obliga al controlador a tomar acciones bruscas como se ve en la figura \ref{fig:control_MV_IT_2_nl_2906}.
+\end{myFrame}
+
+\begin{myFrame}{Cambios en concentracion de descarga}
+Las figuras \ref{fig:control_CV_IT_3_nl_2906} y \ref{fig:control_MV_IT_3_nl_2906} comparan ambos controladores frente a un cambio en escalón de -0.4 \% en la concentración de descarga.
+
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_CV_IT_3_nl_2906}
+\caption{Comparación entre MPC RF (rojo continuo) y PI (azul discontinuo) para cambio de -0.4 \% en la concentración de descarga}
+\label{fig:control_CV_IT_3_nl_2906}
+\end{figure}
+
+\framebreak
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_MV_IT_2_nl_2906}
+\caption{Comparación en las MV entre MPC RF (rojo continuo) y PI (azul discontinuo) para cambio de -0.4 \% en la concentración de descarga}
+\label{fig:control_MV_IT_2_nl_2906}
+\end{figure}
+
+\framebreak
+
+Obviando el hecho de que el controlador PI sigue teniendo el mismo error en el control del nivel de interfaz, se puede ver que en este caso ambos controladores tienen un desempeño similar, que no es satisfactorio pues existe un error en régimen permanente respecto a la nueva referencia de concentración de descarga.
+
+Sin embargo, nuevamente en el caso del controlador MPC esto se debe a su sintonía. Privilegiar aún más la concentración de descarga por sobre el nivel de interfaz posiblemente produzca mejores resultados.
+
+\end{myFrame}
+
+\subsection{Respuesta ante perturbaciones}
+\begin{myFrame}{Respuesta ante perturbaciones}
+
+Se hicieron dos pruebas ante cambios en escalón sobre perturbaciones. Estos cambios son de considerable magnitud y son permanentes en el tiempo, lo que exhibe posible comportamientos difíciles de manejar por parte del espesador
+
+\end{myFrame}
+
+\begin{myFrame}{Escalón en flujo de alimentación}
+La figura \ref{fig:control_DV_IT_5_nl_2906} muestra las perturbaciones utilizadas para esta prueba, que contempla un escalón de 30 $m^3/hr$ en el flujo de alimentación. 
+
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_DV_IT_5_nl_2906}
+\caption{Cambio en escalón en el flujo de alimentación}
+\label{fig:control_DV_IT_5_nl_2906}
+\end{figure}
+
+\framebreak
+
+Es importante recordar que en el entrenamiento del modelo predictivo esta variable \textbf{prácticamente} no varío en toda la simulación.
+
+Por ello, para efectos de este controlador y simulador, corresponde casi a una perturbación no medida.
+
+Las figuras \ref{fig:control_CV_IT_5_nl_2906} y \ref{fig:control_MV_IT_5_nl_2906} muestran y comparan ambas estrategias de control.
+
+\framebreak
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_CV_IT_5_nl_2906}
+\caption{Comparación entre MPC RF (rojo continuo) y PI (azul discontinuo) para respuesta ante perturbación}
+\label{fig:control_CV_IT_5_nl_2906}
+\end{figure}
+
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_MV_IT_5_nl_2906}
+\caption{Comparación de MV entre MPC RF (rojo continuo) y PI (azul discontinuo) para respuesta ante perturbación}
+\label{fig:control_MV_IT_5_nl_2906}
+\end{figure}
+
+\framebreak
+
+El control por parte del MPC-RF es sumamente satisfactorio. 
+
+
+\end{myFrame}
+
+\begin{myFrame}{Escalón en concentración de alimentación}
+La figura \ref{fig:control_DV_IT_5_nl_2906} muestra las perturbaciones utilizadas para esta prueba, que contempla un escalón de -10 \% en la concentración de alimentación. Esto corresponde a un importante cambio en el punto de operación, particularmente por el hecho de que en las simulaciones este nuevo valor se mantiene durante todo el ensayo. 
+
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_DV_IT_4_nl_2906}
+\caption{Cambio en escalón en la concentración de alimentación}
+\label{fig:control_DV_IT_4_nl_2906}
+\end{figure}
+
+\framebreak
+
+
+Las figuras \ref{fig:control_CV_IT_5_nl_2906} y \ref{fig:control_MV_IT_5_nl_2906} muestran y comparan ambas estrategias de control.
+
+\framebreak
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_CV_IT_4_nl_2906}
+\caption{Comparación entre MPC RF (rojo continuo) y PI (azul discontinuo) para respuesta ante perturbación}
+\label{fig:control_CV_IT_4_nl_2906}
+\end{figure}
+
+\framebreak
+\begin{figure}[H]
+\centering
+\includegraphics[width = 1\tw{},height = 0.5\tw{}]{control_MV_IT_4_nl_2906}
+\caption{Comparación de MV entre MPC RF (rojo continuo) y PI (azul discontinuo) para respuesta ante perturbación}
+\label{fig:control_MV_IT_4_nl_2906}
+\end{figure}
+
+\framebreak
+
+Si bien la última porción de la figura \ref{fig:control_CV_IT_4_nl_2906} pareciera mostrar que el controlador MPC-RF no se desempeña bien, en realidad su control es bastante bueno. 
+
+Por las primeras 70 horas de operación ambos controladores se mantiene casi igual y rechazan perfectamente las perturbaciones. Sin embargo, al comparar las MV en la figura \ref{fig:control_MV_IT_4_nl_2906} se puede ver que ambos controladores toman la decisión de mantener en el mínimo el flujo de descarga.
+
+
+Sin embargo, mientras el control PI elige subir al máximo la dosis de floculante, el MPC privilegia mantener sutancialmente abajo de este límite. Esto se puede deber a la sintonía del controlador, pero también se puede debe al hecho de que este estado de operación es poco representativo del set de entrenamiento del modelo predictivo.
+
+
+
+\end{myFrame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}[t, allowframebreaks]
+%\frametitle{Referencias}
+%\bibliographystyle{amsalpha}
+%\bibliography{Cap2Bib}
+%\end{frame}
+
+
+\frame{\titlepage}
+\end{document}

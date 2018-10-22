@@ -1,0 +1,147 @@
+% define tabular espaciado
+
+\newenvironment{mitab}[2]{\vspace{#1}\begin{tabular}{#2}}%
+		{\end{tabular}\vspace{5mm}}
+% define mi tipo de frames
+\newenvironment{myFrame}[1]{
+\begin{frame}[allowframebreaks]
+\frametitle{#1}
+\justifying
+}
+{\end{frame}}
+
+%\newenvironment{myEqn}{\begin{subequations}\begin{gather}}
+%{\end{gather}\end{subequations}}
+% define listas
+
+\newcommand{\be}{\begin{enumerate}}
+\newcommand{\ee}{\end{enumerate}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\bc}{\begin{center}}
+\newcommand{\ec}{\end{center}}
+
+% puntaje pruebas
+\newcommand{\pts[1]}{{\color{red} $\to$ \boxed{\textbf{#1 pts.}}}}
+
+% cosas matematicas
+
+\renewcommand{\d}{\mathsf{d}}
+\newenvironment{eqn}{\begin{eqnarray*}}{\end{eqnarray*}}
+
+\newcommand{\re}[1]{\mbox{Re\{$#1$\}}}		% la parte real
+\newcommand{\im}[1]{\mbox{Im\{$#1$\}}}		% la parte imaginaria
+\newcommand{\gauss}{\operatorname{Gauss}}		% gauss
+\newcommand{\rect}{\sqcap}			% rect
+\newcommand{\pillbox}{\operatorname{circ}}		% circ
+\newcommand{\sinc}{\operatorname{sinc}}		% sinc
+\newcommand{\jinc}{\operatorname{jinc}}		% jinc
+\newcommand{\asinc}{\operatorname{asinc}}		% asinc
+\newcommand{\sen}{\operatorname{sen}}		% seno
+\newcommand{\senh}{\operatorname{senh}}		% seno
+\newcommand{\triang}{\wedge}			% triangulo
+\newcommand{\allint}{\ds{\int_{-\infty}^\infty}}	% integral de -infinito a +infinito
+\newcommand{\midint}{\int_{0}^\infty}		% integral de cero a +infinito
+\newcommand{\allsum}[1]{\sum_{#1=-\infty}^\infty} % idem suma
+\newcommand{\hor}{\operatorname{\uparrow\uparrow}}		% horquilla
+\newcommand{\ahor}{\operatorname{\uparrow\downarrow}}		% anti horquilla
+\newcommand{\sgn}{\operatorname{sgn}}			% signo
+\newcommand{\ddx}{\frac{d}{dx}}			% d/dx
+\newcommand{\ddt}{\frac{d}{dt}}			% d/dt
+\newcommand{\partiald}[2]{\frac{\partial#1}{\partial#2}}		% d/dx (parcial)
+\newcommand{\der}[1]{#1^{\prime}}		% ' derivada
+\newcommand{\derr}[1]{#1^{\prime\prime}}	% '' doble derivada
+\newcommand{\FT}[1]{{\cal F}\left\{#1\right\}}		% FT
+\newcommand{\IFT}[1]{{\cal F}^{-1}\left\{#1\right\}}
+\newcommand{\FTc}[1]{{\cal F}{_C}\{#1\}}
+\newcommand{\FTs}[1]{{\cal F}{_S}\{#1\}}
+\newcommand{\periodic}[1]{\tilde{#1}}		% funcion periodica
+\newcommand{\llave}[4]{ \left\{ \begin{array}{ll}
+			#1 & #2 \\
+			#3 & #4
+			\end{array}
+			\right.}
+\newcommand{\da}{\longrightarrow}
+\newcommand{\noda}{\longleftarrow}
+\newcommand{\matlab}{Matlab}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bseq}{\begin{subequations}}
+\newcommand{\eseq}{\end{subequations}}
+
+%\newcommand{\blin}{\begin{align}}
+%\newcommand{\elin}{\end{align}}
+%\newcommand{\bal}{\begin{align*}}
+%\newcommand{\eal}{\end{align*}}
+\newcommand{\baq}{\begin{eqnarray*}}
+\newcommand{\eaq}{\end{eqnarray*}}
+\newcommand{\eref}[1]{(\ref{#1})}
+\newcommand{\ddelta}{{}^2\delta}
+\newcommand{\trans}[1]{{#1}^{\ensuremath{\mathsf{T}}}}   % transpose
+
+%       definicion de funciones step y shah
+\newlength{\widthfontline}
+\setlength{\widthfontline}{0.12ex}
+
+\newcommand{\step}{\text{\mbox{\rule{0.3ex}{0cm}%
+                        \rule{\widthfontline}{1.0ex}%
+                        \hspace{-\widthfontline}%
+                        \rule[1.0ex]{1.5ex}{\widthfontline}}}}
+\newcommand{\shah}{\text{\mbox{\rule{0.3ex}{0cm}%
+                        \rule{\widthfontline}{1.5ex}%
+                        \rule{0.7ex}{\widthfontline}%
+                        \rule{\widthfontline}{1.5ex}%
+                        \rule{0.7ex}{\widthfontline}%
+                        \rule{\widthfontline}{1.5ex}%
+                        \hspace{\widthfontline}}}}
+\newcommand{\sqsq}{\text{\mbox{\rule{0.3ex}{0cm}%
+                        \rule{\widthfontline}{1.2ex}%
+                        \rule[1.1ex]{0.7ex}{\widthfontline}%
+                        \rule{\widthfontline}{1.2ex}%
+                        \rule{0.7ex}{\widthfontline}%
+                        \rule{\widthfontline}{1.2ex}%
+                        \hspace{\widthfontline}}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%                  Funciones Propias                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\save}[2]{\newcommand{#1}{#2}} %funciona, pero hay que poner el backslash cuando se usa. Para llamarla hay que hacer \save{\#1}{#2}
+\newcommand{\diff}[2]{\frac{d #1}{d #2}} % derivada
+\newcommand{\vabs}[1]{\left\lvert #1 \right\rvert}%valor absoluto bonito
+\newcommand{\corch}[1]{\left[ #1 \right]}
+\newcommand{\squig}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\ptsis}[1]{\left( #1 \right)}
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\logn}[1]{\text{log}\ptsis{#1}}%logaritmo natural
+\newcommand{\ttt}[1]{\texttt{#1}}%formato computador, funciones de MATLAB
+\newcommand{\qt}[1]{``{#1}''}%poner entre comillas
+\newcommand{\tw}{\textwidth} %shortcut pal textiwdth
+\newcommand{\mth}[1]{\( #1\)}
+\newcommand{\mthd}[1]{\[ #1\]}
+\newcommand{\defeq}{\overset{\small{\bigtriangleup}}{=}}
+\newcommand{\bsh}{\textbackslash}
+\newcommand{\intEval}[2]{\Big|_{#1}^{#2}} % Evaluate integral at limits
+\newcommand{\atan}{\text{atan}}
+\newcommand{\acos}{\text{acos}}
+\newcommand{\asin}{\text{asin}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\mhr}[1]{$\text{m}^{#1}/\text{hr}$}
+\usepackage{stackengine}
+\def\delequal{\mathrel{\ensurestackMath{\stackon[2pt]{=}{\scriptscriptstyle\Delta}}}}
+\newcommand{\fig}[5]
+{
+  \begin{figure}
+    \centering
+    \resizebox{#3}{#4}{\includegraphics{#1}}
+    \caption{#5 \normalsize}
+    \label{#2}
+  \end{figure}
+}
+
+\newcommand{\rojo}[1]
+{
+{\color{red}#1}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Manejo UTF8 de listings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

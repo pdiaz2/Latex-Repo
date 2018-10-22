@@ -1,0 +1,172 @@
+\documentclass{article}
+
+\usepackage{amsmath}    % need for subequations
+\usepackage{graphicx}   % need for figures
+\usepackage{verbatim}   % useful for program listings
+\usepackage{color}      % use if color is used in text
+\usepackage{subfigure}  % use for side-by-side figures
+\usepackage{hyperref}   % use for hypertext links, including those to external documents and URLs
+\usepackage[spanish]{babel}
+\usepackage{cancel}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage[section]{placeins} %esto evita que imagenes se salgan de su seccion
+\usepackage{cite} %referencias
+\usepackage{hyperref}
+\usepackage{amsfonts}
+\usepackage{listings}
+\everymath{\displaystyle}
+
+%\usepackage{epstopdf}
+\input{C:/Users/pablo/Ingenieria/Latex/include}
+\graphicspath{{C:/Users/pablo/Ingenieria/Latex/}{./figuras/}}
+
+\usepackage{float}
+ 
+%\setlength\parindent{0pt} %esto hace la sangria nula
+
+\begin{document}
+\thispagestyle{empty}
+%\vspace*{-1cm}
+%\vspace*{-2cm}
+
+\vspace*{-1cm}
+\includegraphics[width=2cm]{logo_PUC.pdf}
+\vspace*{-2cm}
+
+\hspace*{2cm}
+ \begin{tabular}{l}
+  {\ Pontificia Universidad Católica de Chile}\\
+  {\ Escuela de Ingeniería}\\
+  {\ Departamento de Ingeniería Eléctrica}\\
+  {\ Magister en Ciencias de la Ingeniería }\\
+  {\  }\\
+ \end{tabular}
+ \hfill 
+\vspace*{-0.2cm}
+\begin{center}
+{\Large\bf Deducciones matemáticas útiles}\\
+\vspace*{2mm}
+{\Large Tesis de Postgrado}\\
+%\vspace*{3mm}
+{15 de diciembre de 2017}\\
+\vspace*{1mm}
+{\bf Pablo Diaz - 12634581 }\\
+\vspace*{1mm}
+\end{center}
+\hrule\vspace*{2pt}\hrule
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% ENCABEZADO %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+\setcounter{page}{1}
+%\tableofcontents
+%\newpage
+\section{Estimación de Parámetros}
+Vector es columna, no fila. Esto da origen, según lo que viene después, al \textit{numerator layout}.
+Negrita los vectores cuando estén metidos en derivada.
+\subsection{Cálculo para Vectores y Matrices}
+
+$$x^TAy \equiv y^TA^Tx$$
+
+\begin{itemize}
+\item $Ax$: combinación lineal de las columnas de $A$ según los coeficientes de $x$.
+\item $x^TA$: combinación lineal de las filas de $A$ según los coeficientes de $x$.
+\item $A^TA$ es siempre una matriz simétrica y cuadrada.
+\end{itemize}
+
+Supóngase 
+$$\theta \in \mathbb{R}^{m}, \; \Phi_{n\times m}$$
+$$f(\theta) = \Phi \theta \; \in \mathbb{R}^n \Rightarrow f_i(\theta) = \sum_{j = 1}^{m}\Phi_{i,j}\theta_j$$
+\begin{itemize}
+\item Derivada respecto a un $\theta_i$:
+$$\partiald{\textbf{f}}{\theta_i} = \Phi_{:,i}$$
+\item Derivada respecto a $\theta$ (vector derivado por vector):
+
+Jacobiano. Se mueve en $n$ en las filas y en $m$ en las columnas. Cada columna del jacobiano es una derivada parcial respecto a un $\theta_i$.
+
+En este caso particular:
+$$\partiald{\textbf{f}}{\bs{\theta}} = \Phi$$
+\item Derivada del producto punto de dos vectores respecto a un $\theta_i$:
+
+$$a = b(\theta)\cdot c(\theta) = b^Tc$$
+$a$ es escalar obviamente. Por lo tanto, la derivada respecto a un $\theta_k$ tiene que ser escalar.
+$$b(\theta) = (b_1(\theta),b_2(\theta),\ldots,...,b_n(\theta))$$ y análogo para $c$.
+$$a(\theta) = \sum_{i = 1}^{N}b_i(\theta)c_i(\theta) \Rightarrow \partiald{a}{\theta_k} = \sum_{i = 1}^{N}\partiald{{b_i}{c_i}}{\theta_k}$$
+$$\partiald{a}{\theta_k} = \sum_{i = 1}^{N} \squig{\partiald{b_i}{\theta_k}c_i+b_i\partiald{c_i}{\theta_k}} = \partiald{\bs{b}}{\theta_k}\cdot c+b\cdot \partiald{\bs{c}}{\theta_k} = c^T\partiald{\bs{b}}{\theta_k}+b^T\partiald{\bs{c}}{\theta_k}$$
+
+entendiendo por $\partiald{\bs{b}}{\theta_k}$ el vector derivada de $b$ (cada uno de los $b_i$) respecto a un $\theta_k$
+
+\item Derivada del producto punto de dos vectores respecto a un vector $\theta$:
+
+El resultado tiene que ser un vector, que será el gradiente de $a$ y que por tanto es \textbf{vector fila} (los gradientes son vector fila).
+
+$$\partiald{a}{\bs{\theta}} = c^T\partiald{\bs{b}}{\bs{\theta}}+b^T\partiald{\bs{c}}{\bs{\theta}}$$
+
+\item Derivada de formas cuadráticas:
+
+Sea
+$$x^TAx$$
+
+Entonces:
+
+$$\partiald{\%}{\bs{x}} \Rightarrow (Ax)^T\partiald{\bs{x}}{\bs{x}}+ x^T\partiald{A\bs{x}}{\bs{x}} = x^TA^T+x^TA$$
+\end{itemize}
+\subsection{Método de Mínimos Cuadrados Simple}
+En este caso, se tiene que:
+$$\phi(k) = (y(k-1),y(k-2),\ldots,y(k-n_y),u(k),\ldots,u(k-n_u))$$
+Lo anterior es importante por que se parte de la base de un modelo de la forma
+$$y(k) = \theta^T\phi(k)+\eta(k)$$
+lo que necesariamente hace que el término actual de dependa de solo los anteriores. Para esta deducción, se está asumiendo un modelo del tipo ARX, pero da lo mismo. Acá la estructura es fija y lo que se está buscando es identificar el vector de parámetros $\theta$.
+
+La función objetivo a minimizar es:
+$$J_N(\theta) = \frac{1}{N}\sum_{k = 1}^{N}\squig{y(k)-\theta^T\phi(k)}^2$$
+
+Definamos:
+
+$$\bs{y} \delequal \begin{bmatrix}
+y(1) & y(2) & \ldots & y(N)
+\end{bmatrix}^T ,\; \Phi \delequal \begin{bmatrix}
+\phi(1) & \phi(2) & \ldots & \phi(N)
+\end{bmatrix}^T$$
+
+La matriz tiene en cada fila $j$ el $\phi(j)$. Se puede reescribir la función objetivo de forma matricial.
+$$J_N(\theta) = \frac{1}{N}\ptsis{\bs{y}-\Phi\bs{\theta}}^T\ptsis{\bs{y}-\Phi\bs{\theta}}$$
+$$\partiald{J}{\bs{\theta}} = 0 \Rightarrow \frac{1}{N}\ptsis{\bs{y}^T\bs{y}-\bs{y}^T\ptsis{\Phi \bs{\theta}}-\ptsis{\Phi \bs{\theta}}^T\bs{y}+\ptsis{\Phi \bs{\theta}}^T\Phi \bs{\theta}}$$
+$$\Rightarrow \bs{y}^T\bs{y}-\bs{\theta}^T\Phi^T\bs{y}-\bs{\theta}^T\Phi^T\bs{y}+\bs{\theta}^T\Phi^T \Phi \bs{\theta}$$
+$$\partiald{J}{\bs{\theta}} = 0 \Rightarrow 2\Phi^T\bs{y}+\Phi^T \Phi \bs{\theta} = 0$$
+$$\hat{\theta} = \ptsis{\Phi^T \Phi}^{-1}\Phi^T\bs{y}$$
+
+\section{Fórmulas Minería}
+Para efectos de esta sección, las unidades no son relevantes.
+\begin{itemize}
+
+\item \textbf{Concentración en peso a la entrada}
+
+La concentración en peso se deduce en base a la medición del densímetro mediante la siguiente fórmula:
+
+$$C_p = -\ptsis{\frac{\rho_s}{\rho[k]}-\rho_s}\frac{100}{\rho_s-1}$$
+
+\item \textbf{Concentración en peso a la salida}
+
+$$C_p = \frac{\ptsis{\rho[k]-\rho_f}\rho_s}{\ptsis{\rho_s-\rho_f}\rho[k]}100$$
+
+Ambas fórmulas son iguales para el caso en que $\rho_f = 1$, o sea, agua. Este es el caso de estudio.
+\item \textbf{Flujo de Sólidos}:
+
+El cálculo de flujo de sólidos (potencial {\color{red}rojo}) se hace de la siguiente forma:
+
+$$F_s[k] = Q_f[k]\rho[k] C_p$$
+
+\item \textbf{Floculante}
+
+El floculante adicionado en gpt está dado por:
+
+$$U_2 = \frac{G_F}{10}Q_F[k]\frac{1}{F_s[k]} $$
+
+Por lo tanto, el flujo de sólidos INFLUYE en el cálculo del gpt.
+
+
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,314 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{amsmath}    % need for subequations
+\usepackage{graphicx}   % need for figures
+\usepackage{verbatim}   % useful for program listings
+\usepackage{color}      % use if color is used in text
+\usepackage{subfigure}  % use for side-by-side figures
+\usepackage{hyperref}   % use for hypertext links, including those to external documents and URLs
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage[section]{placeins} %esto evita que imagenes se salgan de su seccion
+\usepackage{cite} %referencias
+\usepackage{hyperref}
+
+
+
+%Setup hyperref package, and colours for links
+\usepackage{hyperref}
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\hypersetup{colorlinks,breaklinks,urlcolor=linkcolour, linkcolor=linkcolour}
+
+\usepackage{supertabular} 				%for Grades
+\usepackage{titlesec}					%custom \section
+%CV Sections inspired by: 
+%http://stefano.italians.nl/archives/26
+\titleformat{\section}{\Large\scshape\raggedright}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{3pt}{3pt}
+
+%FONTS
+%\defaultfontfeatures{Mapping=tex-text}
+%\setmainfont[SmallCapsFont = Fontin SmallCaps]{Fontin}
+%%% modified for Karol Kozioł for ShareLaTeX use
+
+
+\usepackage{float}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\newcommand{\braros}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\bred}[1]{\left( #1 \right)}
+\newcommand{\bcuad}[1]{\left[ #1 \right]}
+\newcommand{\e}[1]{\cdot 10^{#1}}
+\newcommand{\derp}[2]{\dfrac{\partial #1}{\partial #2}}
+\renewcommand{\sin}{\operatorname{sen}}
+\renewcommand{\arcsin}{\operatorname{arcsen}}
+\newcommand{\qt}[1]{``{#1}''}%poner entre comillas
+
+\setlength\parindent{0pt} %esto hace la sangria nula
+%\input{C:/Users/Diego/Documents/Latex/include}
+%\graphicspath{{C:/Users/dcruz/Documents/Latex/}}
+\usepackage{amssymb} %para signos raros
+
+\newcommand{\vv}[1]{\text{\v{#1}}}
+\begin{document}
+
+\newcommand{\PUC}{\textsc{Pontificia Universidad Católica de Chile}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% ENCABEZADO %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%--------------------TITLE-------------
+\pagestyle{empty} % non-numbered pages
+\par{\centering
+		{\Huge{Pablo \textsc{Diaz Titelman}}
+	}\par
+	}
+\begin{center}
+Ingeniero Civil Electricista
+
+Magíster en Ciencias de la Ingeniería
+
+\PUC
+
++56 9 83600796
+
+\href{mailto:pdiaz2@uc.cl}{\underline{pdiaz2@uc.cl}}
+\end{center}
+
+%\bigskip
+\section*{Antecedentes Académicos}
+\begin{tabular}{p{2 cm}|p{11cm}|p{2cm}}	
+\textsc{Agosto} 2016 
+- 
+\textsc{Noviembre} 2018
+&
+\textbf{\PUC}
+
+\textit{Magíster (c) en Ciencias de la Ingeniería, área de Ingeniería Eléctrica}
+
+\begin{itemize}
+	\item Tesis: ``Model Predictive Control Based on Machine Learning Techniques for Paste Tailing Production''
+	\item Profesor supervisor: Aldo \textsc{Cipriano}.
+	\item Defensa programada para mediados de Noviembre.
+	\item 150 créditos aprobados y 0 reprobados.
+	\item Promedio acumulado: 6,46.
+	\item Ayudante Postgrado: Control Inteligente, Control Predictivo.
+\end{itemize}
+
+&
+Santiago, 
+
+Chile\\
+
+&\\
+
+\textsc{Marzo} 2012 
+- \textsc{Octubre} 2018 &
+\textbf{\PUC}
+
+\textit{Estudiante de Ingeniería Civil Electricista, Major en Ingeniería Eléctrica, Minor de Profundidad en Electrónica y Telecomunicaciones}
+
+\begin{itemize}
+	\item Ingreso con Matrícula de Honor.
+	\item 600 créditos aprobados y 0 reprobados.
+	\item Promedio acumulado: 5,84.
+	\item Lugar 32 de 694 en ranking académico de la promoción.
+	\item Entre el 15\% mejor en examen de licenciatura 2016-1.
+	\item Ayudante Pregrado: Cálculo I, Señales y Sistemas, Telecomunicaciones.
+\end{itemize}
+
+&
+Santiago, 
+
+Chile\\
+
+&\\
+
+1998 - 2011 &
+\textbf{\textsc{Colegio Craighouse}}
+
+\textit{Educación Básica y Media}
+\begin{itemize}
+	\item Realización de programa IB con 37/45 puntos.
+	\item Nota de enseñanza media: 6,94.
+	\item Mejor promedio académico de la promoción.
+	\item Premio de Física y Filosofía en promoción.
+\end{itemize}
+
+&
+Santiago, Chile
+\end{tabular}
+
+\bigskip
+\section*{\textsc{Antecedentes Laborales}}
+
+\begin{tabular}{p{2 cm}|p{11cm}|p{2cm}}
+
+\textsc{Marzo} 2017 - \textsc{Marzo} 2017 &
+\textbf{\textsc{Honeywell Chile S.A}}
+
+\textit{Trabajo profesional jornada completa}
+
+\begin{itemize}
+	\item La actividad desarrollda en la práctica profesional fue sumamente exitosa. Dado lo anterior y posterior a una reunión con el cliente Codelco, se fijó un contrato de dos semanas con Honeywell para implementar 20 lazos más de CPM y así acoplarlos al 80\% de los lazos de control predictivo implementados.
+\end{itemize}
+&
+Santiago, 
+
+Chile
+\\
+
+&\\
+
+\textsc{Diciembre} 2016 - \textsc{Febrero} 2017 &
+\textbf{\textsc{Honeywell Chile S.A}}
+
+\textit{Práctica profesional}
+
+\begin{itemize}
+	\item CPM es una herramienta cuyo fin es automatizar, estandarizar y monitorear los indicadores de desempeño de sus controladores. Este software se encontraba en desuso. El trabajo consistió en explorar, configurar, automatizar y describir en plenitud la herramienta y aplicarla a dos lazos de control predictivo en Mina División Ministro Hales y El Teniente. Parte del trabajo consistió en ejecutar la herramienta y automatizar su operación con un fuerte énfasis en la transferencia y documentación correcta. La práctica fue aprobada con nota Distinguida.
+\end{itemize}
+&
+Santiago, 
+
+Chile
+\\
+
+&\\
+
+
+
+	
+
+\textsc{Diciembre} 2015 &
+\textbf{\textsc{Constructora Terrazo Ltda.}}
+
+\textit{Práctica profesional obrera}
+
+\begin{itemize}
+	\item El trabajo consistió en asistir al técnico eléctrico y mano de obra no calificada en la construcción de un condominio de cuatro casas. La práctica fue aprobada con nota Distinguida.
+\end{itemize}
+&
+Santiago, 
+
+Chile
+\\
+
+&\\
+
+\textsc{Junio} 2015 -
+\textsc{Febrero} 2016  &
+
+\textbf{\textsc{\textit{Staff} Plan Educativo Judaico}}
+
+\textit{Directorio}
+
+\begin{itemize}
+	\item Encargado de la organización y logística de varios grupos de estudios y actividades, así como de la producción y organización de jornadas del universo completo de
+participantes (500).
+	\item Organización y ejecución de un viaje de estudio a Israel durante febrero. 
+\end{itemize}
+&
+Santiago, 
+
+Chile
+\\
+
+&\\
+
+2010 -
+2014 &
+
+\textbf{\textsc{Movimiento juvenil \textit{Bet-El}}}
+
+\textit{Dirigente y Directorio}
+
+\begin{itemize}
+	\item Encargado de la transmisión de conocimiento y valores judíos a través de educación no formal. Organización, financiamiento y gestión de variados proyectos: viajes, capacitaciones .
+	\item Integrante del Directorio del movimiento los años 2012 y 2014.
+	\item Actividad voluntaria y no remunerada.
+\end{itemize}
+&
+Santiago, 
+
+Chile
+\\
+
+&\\
+
+\textsc{Marzo} 2013 - \textsc{Diciembre} 2013 &
+
+\textbf{\textsc{Preuniversitario Mauro Quintana}}
+
+\textit{Asistente de profesor}
+
+\begin{itemize}
+	\item El trabajo consistió en dictar las clases recuperativas y en responder dudas de los alumnos de forma remota.
+\end{itemize}
+&
+Santiago, 
+
+Chile
+\end{tabular}
+
+\bigskip
+\section*{\textsc{Competencias Profesionales}}
+
+\begin{tabular}{ll}
+Control automático y sistemas inteligentes		& avanzado\\
+Control predictivo & avanzado\\
+Aprendizaje de máquinas		& avanzado\\
+Control de procesos & medio\\
+Electrónica analógica y digital & medio\\
+Telecomunicaciones		& medio\\
+Máquinas eléctricas		& medio\\
+Big Data Analytics & medio\\
+Tecnologías de información & medio\\
+Mercados eléctricos		& básico\\
+Sistemas de potencia & básico\\
+\end{tabular}
+
+\bigskip
+\section*{\textsc{Herramientas Computacionales}}
+
+\begin{tabular}{ll}
+Matlab (software computación científica) 					& avanzado\\
+Xilinx (diseño y simulación de circuitos digitales)		& avanzado\\
+Latex (editor de texto)									& avanzado\\
+Word, Excel, PowerPoint									& avanzado\\
+LTSpice (simulación de circuitos electrónicos)			& medio\\
+Eagle (diseño de PBCs)									& medio\\
+Lenguajes de programación								& Python, AMPL\\
+Lenguajes de descripción de hardware					& Verilog
+\end{tabular}
+
+\bigskip
+\section*{\textsc{Lenguajes}}
+
+\begin{tabular}{ll}
+Español & lengua nativa\\
+Ingles & fluido
+\end{tabular}
+
+\bigskip
+\section*{\textsc{Referencias}}
+
+\begin{itemize}
+	\item Aldo Cipriano Zamorano. PhD de la Unversidad de München en Ingeniería Eléctrica. Profesor Titular y académico de la Pontificia Universidad Católica. Director General de DICTUC. Director alterno proyecto FONDEF que enmarcó la tesis de postgrado. Profesor supervisor durante trabajo de tesis de postgrado entre 2016 y 2018. \href{mailto:aciprian@ing.puc.cl}{\underline{aciprian@ing.puc.cl}}
+	\item Felipe Nuñez Retamal. Profesor Asociado de la Escuela de Ingeniería de la Pontificia Universidad Católica de Chile. Director proyecto FONDEF que enmarcó la tesis de postgrado. \href{mailto:fenunez@ing.puc.cl}{\underline{fenunez@ing.puc.cl}}
+\end{itemize}
+
+\bigskip
+\section*{\textsc{Información Adicional}}
+\begin{tabular}{ll}
+Rut 			& 18.395.108-4 \\
+Fecha de nacimiento & 11 de mayo de 1993\\
+Lugar de nacimiento & Santiago, Chile\\
+%Estado Civil & : Soltero \\
+Dirección & Parque Sur 12815 Casa 23, Lo Barnechea\\
+Intereses & Investigación, música (batería y guitarra), viajar y deportes (escalada, fútbol)  \\
+Trabajos adicionales & Clases particulares de ciencias básicas y desarrollo de software
+\end{tabular}
+\end{document}
