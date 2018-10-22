@@ -1,0 +1,24 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Color code}{3}{section.1.1}
+\contentsline {chapter}{\numberline {2}Life Principles}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}Life Phillosophy}{5}{section.2.1}
+\contentsline {section}{\numberline {2.2}Love and Relationships}{5}{section.2.2}
+\contentsline {section}{\numberline {2.3}Health and Nutrition}{5}{section.2.3}
+\contentsline {chapter}{\numberline {3}Work Principles}{7}{chapter.3}
+\contentsline {section}{\numberline {3.1}Work Phillosophy}{7}{section.3.1}
+\contentsline {section}{\numberline {3.2}Work Habits}{7}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Meetings}{7}{subsection.3.2.1}
+\contentsline {subsubsection}{Cram all day meetings together if possible succesively}{7}{section*.2}
+\contentsline {subsubsection}{Specify time limit when FORMULATING a meeting}{7}{section*.3}
+\contentsline {subsubsection}{Prepare Requests Before Hand}{7}{section*.4}
+\contentsline {subsection}{\numberline {3.2.2}Maximum Efficiency Hacks}{7}{subsection.3.2.2}
+\contentsline {subsubsection}{If it takes less than 2-3 minutes, do it immediately}{7}{section*.5}
+\contentsline {subsection}{\numberline {3.2.3}Plan Hierarchichally}{7}{subsection.3.2.3}
+\contentsline {subsubsection}{Think Modullarly}{7}{section*.6}
+\contentsline {subsubsection}{Rest!}{7}{section*.7}
+\contentsline {subsubsection}{Prioritize recieved files}{8}{section*.8}
+\contentsline {subsection}{\numberline {3.2.4}Avoiding Distractions}{8}{subsection.3.2.4}
+\contentsline {subsubsection}{Close Email}{8}{section*.9}
+\contentsline {subsubsection}{Cell Phone AT LEAST 3 meters away from you}{8}{section*.10}
+\contentsline {subsubsection}{{\color {orange}Music?}}{8}{section*.11}
