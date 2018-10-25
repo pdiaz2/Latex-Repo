@@ -1,5 +1,5 @@
 \documentclass{article}
-
+\usepackage{xcolor}
 \usepackage{amsmath}    % need for subequations
 \usepackage{graphicx}   % need for figures
 \usepackage{verbatim}   % useful for program listings
@@ -67,5 +67,6 @@
 \item SALDO ADEUDADO INICIO PERIODO ANTERIOR contiene la deuda arrastrada en la tarjeta \emph{antes de pagar ese mes}. Por el momento, se que contempla {\color{red} sólo aquello que está como en cuotas, o sea no intereses.} Caso típico: Audiomusica y Focusrite. El costo total se dividió en 6 cuotas. Si {\color{red} este} mes estoy pagando la cuota 5, el mes {\color{red}anterior} pagué la 4. Quedaban 3 por lo tanto {\color{red} el mes anterior}. El monto que aparece aquí es {\color{red}3}*precioCuota. 
 \item En general, si pago bien, MONTO TOTAL FACTURADO A PAGAR (PERIODO ANTERIOR) es igual a MONTO PAGADO PERIODO ANTERIOR.
 \item SALDO ADEUDADO FINAL en el mismo ejemplo anterior serían las dos cuotas que quedan al final del mes.
+\item El cupo utilizado corresponde a {\color{red}TOTAL OPERACIONES ESTE MES} + {\color{orange}CUOTAS*PRECIO QUE ME FALTAN}.
 \end{itemize}
 \end{document}
