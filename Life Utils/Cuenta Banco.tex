@@ -1,0 +1,71 @@
+\documentclass{article}
+
+\usepackage{amsmath}    % need for subequations
+\usepackage{graphicx}   % need for figures
+\usepackage{verbatim}   % useful for program listings
+\usepackage{color}      % use if color is used in text
+\usepackage{subfigure}  % use for side-by-side figures
+\usepackage{hyperref}   % use for hypertext links, including those to external documents and URLs
+\usepackage[spanish]{babel}
+\usepackage{cancel}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage[section]{placeins} %esto evita que imagenes se salgan de su seccion
+\usepackage{cite} %referencias
+\usepackage{hyperref}
+\usepackage{amsfonts}
+\usepackage{listings}
+\everymath{\displaystyle}
+
+%\usepackage{epstopdf}
+\input{../include}
+\graphicspath{{./figuras/}}
+
+\usepackage{float}
+ 
+%\setlength\parindent{0pt} %esto hace la sangria nula
+
+\begin{document}
+\thispagestyle{empty}
+%\vspace*{-1cm}
+%\vspace*{-2cm}
+
+%\vspace*{-1cm}
+%\includegraphics[width=2cm]{logo_PUC.pdf}
+%\vspace*{-2cm}
+
+\hspace*{2cm}
+ \begin{tabular}{l}
+  {\ Pontificia Universidad Católica de Chile}\\
+  {\ Escuela de Ingeniería}\\
+  {\ Departamento de Ingeniería Eléctrica}\\
+  {\ Fondef IT16M10012 }\\
+  {\  }\\
+ \end{tabular}
+ \hfill 
+\vspace*{-0.2cm}
+\begin{center}
+{\Large\bf Entendiendo Cuenta Tarjeta de Crédito}\\
+\vspace*{2mm}
+{\Large Fondef IT16M10012 - MPC}\\
+%\vspace*{3mm}
+{\today{}}\\
+\vspace*{1mm}
+{\bf Pablo Diaz }\\
+\vspace*{1mm}
+\end{center}
+\hrule\vspace*{2pt}\hrule
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% ENCABEZADO %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+\setcounter{page}{1}
+%\tableofcontents
+%\newpage
+\begin{itemize}
+\item La facturación se suele hacer entre 20 y 20 de cada mes -ish.
+\item SALDO ADEUDADO INICIO PERIODO ANTERIOR contiene la deuda arrastrada en la tarjeta \emph{antes de pagar ese mes}. Por el momento, se que contempla {\color{red} sólo aquello que está como en cuotas, o sea no intereses.} Caso típico: Audiomusica y Focusrite. El costo total se dividió en 6 cuotas. Si {\color{red} este} mes estoy pagando la cuota 5, el mes {\color{red}anterior} pagué la 4. Quedaban 3 por lo tanto {\color{red} el mes anterior}. El monto que aparece aquí es {\color{red}3}*precioCuota. 
+\item En general, si pago bien, MONTO TOTAL FACTURADO A PAGAR (PERIODO ANTERIOR) es igual a MONTO PAGADO PERIODO ANTERIOR.
+\item SALDO ADEUDADO FINAL en el mismo ejemplo anterior serían las dos cuotas que quedan al final del mes.
+\end{itemize}
+\end{document}
